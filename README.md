@@ -59,3 +59,21 @@ To add it:
 code README.md
 
 
+## Day 11 — Student Management UI (React Hooks)
+
+Built the student table and add-student form using `useState` for controlled inputs and client-side validation.
+
+### What I built
+- `StudentList` page — renders a table of hardcoded mock students (id, name, email, age, course)
+- `AddStudent` page — controlled form with fields for name, email, age, course
+- Form state managed via `useState`, with a matching `errors` state for validation messages
+- Validation: all fields required, email must match a basic email pattern, age must be a positive number
+- On successful submit, form data is logged to the console and the form resets
+
+### Challenges
+- None major — this built cleanly on top of Day 10's layout and routing.
+
+### What I learned
+- Controlled inputs mean React state is the single source of truth for form values — every keystroke updates state via `onChange`, and the input's `value` always reflects that state back.
+- Validation can run entirely client-side before submission, giving instant feedback without needing the backend — though server-side validation (which the FastAPI backend already has) is still necessary as a second line of defense.
+- Using a single `formData` object with one `handleChange` function (keyed by `e.target.name`) avoids writing a separate `useState` and handler for every individual field
