@@ -103,3 +103,26 @@ Replaced hardcoded student data with real API calls using Axios, and enabled COR
 - The Network tab in DevTools is the most reliable way to verify what's actually happening between frontend and backend — more precise than just watching page behavior.
 - Always verify a file's actual contents after a paste/edit (`cat -n`) rather than assuming it worked — copy/paste and terminal quirks can silently fail.
 
+
+
+## Day 13 — Update & Delete Students (Loading, Errors, Toasts)
+
+Completed the CRUD flow with Edit and Delete functionality, proper loading states, and toast notifications.
+
+### What I built
+- Edit and Delete buttons on every row in the student table
+- `EditStudent` page — fetches the existing student via `GET /students/{id}`, pre-fills a form, and submits changes via `PUT /students/{id}`
+- Delete button calls `DELETE /students/{id}` after a native browser confirmation prompt
+- Loading states on both buttons ("Saving...", "Deleting...") disable the button and show progress during the request
+- Errors are surfaced to the user via toast notifications and inline messages, never silently swallowed
+- Bonus: integrated `react-hot-toast` for success/error notifications across Add, Edit, and Delete actions
+
+### Challenges
+- Repeatedly ran `uvicorn` and `npm run dev` in the wrong project folder (mixing up `student-api` and `react-fastapi-lab`), which caused confusing "module not found" and connection errors that looked like application bugs but were just terminal location mistakes.
+- A stale/cached page load initially showed "Failed to load students" even though the backend was working — resolved with a hard refresh (`Ctrl+Shift+R`).
+- Confirmed the `POST /students` 401 (documented in Day 12) is still present and expected, since frontend login hasn't been built yet — verified this doesn't affect Edit/Delete, which don't require auth.
+
+### What I learned
+- Running a full-stack app requires two servers active simultaneously, each in its own terminal tab, in its own correct folder — easy to lose track of which terminal is which.
+- A "connection refused" or blank page error doesn't always mean the code is broken — checking whether the dev server is actually still running is often the first thing to verify.
+- Toast notifications (via `react-hot-toast`) give much clearer, less intrusive feedback than `alert()` or silent failures, and make loading/error states visible without extra UI work.

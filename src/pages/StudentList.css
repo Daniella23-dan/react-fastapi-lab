@@ -17,3 +17,43 @@
     background-color: #f1f5f9;
     font-weight: 600;
 }
+
+
+.actions-cell {
+    display: flex;
+    gap: 0.5rem;
+}
+
+
+.edit-btn,
+.delete-btn {
+    padding: 0.35rem 0.7rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.edit-btn {
+    background-color: #2563eb;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #1d4ed8;
+}
+
+.delete-btn {
+    background-color: #dc2626;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #b91c1c;
+}
+
+.delete-btn:disabled {
+    background-color: #f3a5a5;
+    cursor: not-allowed;
+}

@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import api from "../api";
 import "./AddStudent.css";
-import toast from "react-hot-toast";
 
-function AddStudent() {
+function EditStudent() {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -15,8 +16,26 @@ function AddStudent() {
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState(null);
+  const [loadError, setLoadError] = useState(null);
+
+  useEffect(() => {
+    api
+      .get(`/students/${id}`)
+      .then((response) => {
+        const { name, email, age, course } = response.data;
+        setFormData({ name, email, age: String(age), course });
+        setLoadError(null);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoadError("Failed to load student data.");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -59,36 +78,40 @@ function AddStudent() {
     }
 
     setErrors({});
-    setSubmitError(null);
     setSubmitting(true);
 
     api
-      .post("/students", {
+      .put(`/students/${id}`, {
+        id: Number(id),
         name: formData.name,
         email: formData.email,
         age: Number(formData.age),
         course: formData.course,
       })
-     
-
       .then(() => {
-        setFormData({ name: "", email: "", age: "", course: "" });
-        toast.success("Student added successfully");
+        toast.success("Student updated successfully");
         navigate("/students");
       })
       .catch((err) => {
         console.error(err);
-        setSubmitError("Failed to add student. Please try again.");
-        toast.error("Failed to add student");
+        toast.error("Failed to update student");
       })
       .finally(() => {
         setSubmitting(false);
       });
   }
 
+  if (loading) {
+    return <p>Loading student...</p>;
+  }
+
+  if (loadError) {
+    return <p className="field-error">{loadError}</p>;
+  }
+
   return (
     <div>
-      <h2>Add Student</h2>
+      <h2>Edit Student</h2>
       <form onSubmit={handleSubmit} className="add-student-form" noValidate>
         <div className="form-field">
           <label htmlFor="name">Name</label>
@@ -138,14 +161,12 @@ function AddStudent() {
           {errors.course && <span className="field-error">{errors.course}</span>}
         </div>
 
-        {submitError && <span className="field-error">{submitError}</span>}
-
         <button type="submit" disabled={submitting}>
-          {submitting ? "Adding..." : "Add Student"}
+          {submitting ? "Saving..." : "Save Changes"}
         </button>
       </form>
     </div>
   );
 }
 
-export default AddStudent;
+export default EditStudent;
