@@ -1,12 +1,41 @@
+import { useState, useEffect } from "react";
+import api from "../api";
 import "./StudentList.css";
 
-const mockStudents = [
-  { id: 1, name: "Angel Dani", email: "angel@example.com", age: 20, course: "Economics" },
-  { id: 2, name: "Susan Peters", email: "susan@example.com", age: 25, course: "Geography" },
-  { id: 3, name: "Carine Joy", email: "carine@example.com", age: 18, course: "Physics" },
-];
-
 function StudentList() {
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  function fetchStudents() {
+    setLoading(true);
+    api
+      .get("/students")
+      .then((response) => {
+        setStudents(response.data);
+        setError(null);
+      })
+      .catch((err) => {
+        setError("Failed to load students. Is the API running?");
+        console.error(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  if (loading) {
+    return <p>Loading students...</p>;
+  }
+
+  if (error) {
+    return <p className="field-error">{error}</p>;
+  }
+
   return (
     <div>
       <h2>Student List</h2>
@@ -21,7 +50,7 @@ function StudentList() {
           </tr>
         </thead>
         <tbody>
-          {mockStudents.map((student) => (
+          {students.map((student) => (
             <tr key={student.id}>
               <td>{student.id}</td>
               <td>{student.name}</td>

@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
 import "./AddStudent.css";
 
 function AddStudent() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -10,6 +14,8 @@ function AddStudent() {
   });
 
   const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -52,9 +58,27 @@ function AddStudent() {
     }
 
     setErrors({});
-    console.log("Student submitted:", formData);
+    setSubmitError(null);
+    setSubmitting(true);
 
-    setFormData({ name: "", email: "", age: "", course: "" });
+    api
+      .post("/students", {
+        name: formData.name,
+        email: formData.email,
+        age: Number(formData.age),
+        course: formData.course,
+      })
+      .then(() => {
+        setFormData({ name: "", email: "", age: "", course: "" });
+        navigate("/students");
+      })
+      .catch((err) => {
+        console.error(err);
+        setSubmitError("Failed to add student. Please try again.");
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   return (
@@ -109,7 +133,11 @@ function AddStudent() {
           {errors.course && <span className="field-error">{errors.course}</span>}
         </div>
 
-        <button type="submit">Add Student</button>
+        {submitError && <span className="field-error">{submitError}</span>}
+
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Adding..." : "Add Student"}
+        </button>
       </form>
     </div>
   );

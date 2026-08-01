@@ -77,3 +77,29 @@ Built the student table and add-student form using `useState` for controlled inp
 - Controlled inputs mean React state is the single source of truth for form values — every keystroke updates state via `onChange`, and the input's `value` always reflects that state back.
 - Validation can run entirely client-side before submission, giving instant feedback without needing the backend — though server-side validation (which the FastAPI backend already has) is still necessary as a second line of defense.
 - Using a single `formData` object with one `handleChange` function (keyed by `e.target.name`) avoids writing a separate `useState` and handler for every individual field
+
+
+
+## Day 12 — Connect React to FastAPI
+
+Replaced hardcoded student data with real API calls using Axios, and enabled CORS on the backend so the two apps can communicate.
+
+### What I built
+- Enabled CORS in FastAPI (`CORSMiddleware`), allowing requests specifically from `http://localhost:5173`
+- Created `src/api.js` — a reusable Axios instance pointing to the FastAPI base URL (`http://127.0.0.1:8000`)
+- `StudentList` now fetches real data from `GET /students` on mount via `useEffect`, with loading and error states
+- `AddStudent` now POSTs to `/students` instead of just logging to console, keeping the same client-side validation from Day 11
+- Verified in the browser's Network tab that requests actually reach the backend and return real data
+
+### Known issue
+- `POST /students` requires a valid JWT (added in Day 9's backend auth work), but the React app doesn't have login/authentication built yet. Submitting the Add Student form currently returns a `401 Unauthorized`. This is expected given the current state of the frontend, not a bug — it will be addressed once user login is added to the React app in a later day.
+
+### Challenges
+- `axios` and the `src/api.js` file hadn't actually been created despite following the setup steps — a paste didn't take effect. Caught this by running `grep` and `cat -n` to directly inspect file contents rather than assuming a paste succeeded.
+- Discovered a duplicate `src/layout` folder (missing the "s") sitting alongside the correct `src/layouts` — leftover from earlier setup. Removed it after confirming the app was importing from the correctly named folder.
+
+### What I learned
+- CORS is a browser-side protection — the backend must explicitly allow the frontend's origin, or requests get blocked before reaching any route logic, regardless of whether the code itself is correct.
+- The Network tab in DevTools is the most reliable way to verify what's actually happening between frontend and backend — more precise than just watching page behavior.
+- Always verify a file's actual contents after a paste/edit (`cat -n`) rather than assuming it worked — copy/paste and terminal quirks can silently fail.
+
