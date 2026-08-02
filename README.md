@@ -32,6 +32,21 @@ src/
 
 Scaffolded the React app and built a responsive dashboard layout.
 
+
+## Screenshots
+
+**Student List**
+![Student List](screenshots/student-list.png)
+
+**Add Student**
+![Add Student](screenshots/add-student.png)
+
+**Edit Student**
+![Edit Student](screenshots/edit-student.png)
+
+**Mobile View**
+![Mobile View](screenshots/mobile-view.png)
+
 What I built
 
 New Vite + React app (react-fastapi-lab)
@@ -126,3 +141,26 @@ Completed the CRUD flow with Edit and Delete functionality, proper loading state
 - Running a full-stack app requires two servers active simultaneously, each in its own terminal tab, in its own correct folder — easy to lose track of which terminal is which.
 - A "connection refused" or blank page error doesn't always mean the code is broken — checking whether the dev server is actually still running is often the first thing to verify.
 - Toast notifications (via `react-hot-toast`) give much clearer, less intrusive feedback than `alert()` or silent failures, and make loading/error states visible without extra UI work.
+
+
+## Day 14 — Final Polish: Login & Full CRUD
+
+Added authentication to the frontend, completing the full CRUD flow end-to-end.
+
+### What I built
+- `Login` page — submits credentials to `POST /auth/login`, stores the returned JWT in `localStorage`
+- Updated `api.js` with an Axios request interceptor that automatically attaches the saved token as a `Bearer` header on every request
+- Verified full CRUD now works end-to-end while authenticated: Create, Read, Update, Delete all succeed
+- Added a Login link to the Navbar
+- Confirmed responsive design still holds up across all pages
+- Added README screenshots for both repositories
+
+### Challenges
+- A typo (`localstorage` instead of `localStorage`) silently crashed the login submit handler with a `ReferenceError`, which surfaced first as a confusing CORS error in the browser console before the real cause was found.
+- A malformed JSX route definition (`<Routes path=... />` instead of `<Route path=... />`) broke routing until corrected.
+- Screenshot files ended up misplaced in the wrong project folder during setup; resolved using `find` to locate them and `mv` to relocate them correctly.
+
+### What I learned
+- A JavaScript `ReferenceError` inside a `.then()`/`.catch()` chain can surface as a misleading network-level error in the browser, since the request never actually gets sent — always check the Console tab for the root cause, not just the visible symptom.
+- Axios interceptors are a clean way to handle cross-cutting concerns (like auth headers) without repeating logic in every API call.
+- Keeping two terminal tabs clearly labeled (or using separate terminal windows) for frontend/backend avoids a large class of "wrong folder" errors during full-stack development.

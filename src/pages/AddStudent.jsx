@@ -69,7 +69,7 @@ function AddStudent() {
         age: Number(formData.age),
         course: formData.course,
       })
-     
+
 
       .then(() => {
         setFormData({ name: "", email: "", age: "", course: "" });

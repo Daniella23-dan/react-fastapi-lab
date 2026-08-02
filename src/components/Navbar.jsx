@@ -11,6 +11,7 @@ function Navbar({ onMenuClick }) {
         <a href="/">Dashboard</a>
         <a href="/students">Students</a>
         <a href="/students/add">Add Student</a>
+        <a href="/login">Login</a>
       </nav>
     </header>
   );
