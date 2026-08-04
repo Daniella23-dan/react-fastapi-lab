@@ -1,4 +1,9 @@
-# React FastAPI Lab
+## React FastAPI Lab
+
+## Demo Video
+[Watch the demo recording](demo/demo-recording.webm)
+
+
 
 A React frontend built to connect with
 the FastAPI Student Management API
